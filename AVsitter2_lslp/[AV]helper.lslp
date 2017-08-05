@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 string registration_product = "AVsitter2";
 string product = "AVhelper";
 string version = "2.2";
@@ -28,24 +29,6 @@ vector default_size = <0.12,0.12,3.5>;
 key key_request;
 vector my_pos;
 rotation my_rot;
-stop_all_anims()
-{
-    if (llAvatarOnSitTarget())
-    {
-        if (llGetPermissions() & PERMISSION_TRIGGER_ANIMATION)
-        {
-            if (llGetAgentSize(llGetPermissionsKey()))
-            {
-                list anims = llGetAnimationList(llGetPermissionsKey());
-                integer n;
-                for (n = 0; n < llGetListLength(anims); n++)
-                {
-                    llStopAnimation(llList2String(anims, n));
-                }
-            }
-        }
-    }
-}
 set_text()
 {
     string text = "▽";
@@ -171,7 +154,7 @@ default
                 {
                     if (llAvatarOnSitTarget())
                     {
-                        stop_all_anims();
+                        cmn_stop_all_anims();
                         llRegionSay(comm_channel, "GETUP");
                     }
                 }
@@ -243,7 +226,7 @@ default
                 }
                 else
                 {
-                    stop_all_anims();
+                    cmn_stop_all_anims();
                     llRegionSay(comm_channel, "GETUP");
                     CURRENT_AV = "";
                 }

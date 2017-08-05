@@ -1,8 +1,14 @@
 $module ()
 
 // $import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
-
-
+string strReplace(string str, string search, string replace)
+{
+    return llDumpList2String(llParseStringKeepNulls(str, [search], []), replace);
+}
+list order_buttons(list buttons)
+{
+    return llList2List(buttons, -3, -1) + llList2List(buttons, -6, -4) + llList2List(buttons, -9, -7) + llList2List(buttons, -12, -10);
+}
 string FormatFloat(float f, integer num_decimals)
 {
     float rounding = (float)(".5e-" + (string)num_decimals) - 5e-07;
@@ -23,4 +29,38 @@ string FormatFloat(float f, integer num_decimals)
         ret = llGetSubString(ret, 0, -2);
     }
     return ret;
+}
+unsit_all()
+{
+    integer i = llGetNumberOfPrims();
+    while (llGetAgentSize(llGetLinkKey(i)))
+    {
+        llUnSit(llGetLinkKey(i));
+        i--;
+    }
+}
+stop_all_anims()
+{
+    if (llAvatarOnSitTarget())
+    {
+        if (llGetPermissions() & PERMISSION_TRIGGER_ANIMATION)
+        {
+            if (llGetAgentSize(llGetPermissionsKey()))
+            {
+                list anims = llGetAnimationList(llGetPermissionsKey());
+                integer n;
+                for (n = 0; n < llGetListLength(anims); n++)
+                {
+                    llStopAnimation(llList2String(anims, n));
+                }
+            }
+        }
+    }
+}
+integer get_number_of_scripts(string main_script)
+{
+    integer i;
+    while (llGetInventoryType(main_script + " " + (string)(++i)) == INVENTORY_SCRIPT)
+        ;
+    return i;
 }

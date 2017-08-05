@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 string product = "AVsitter™";
 string version = "2.2";
 string BRAND;
@@ -62,10 +63,6 @@ send_anim_info(integer broadcast)
 Readout_Say(string say)
 {
     llMessageLinked(LINK_THIS, 90022, say, (string)SCRIPT_CHANNEL);
-}
-list order_buttons(list buttons)
-{
-    return llList2List(buttons, -3, -1) + llList2List(buttons, -6, -4) + llList2List(buttons, -9, -7) + llList2List(buttons, -12, -10);
 }
 memory()
 {
@@ -223,7 +220,7 @@ integer animation_menu(integer animation_menu_function)
         }
         llListenRemove(menu_handle);
         menu_handle = llListen(menu_channel, "", CONTROLLER, "");
-        llDialog(CONTROLLER, menu, order_buttons(menu_items0 + menu_items1 + menu_items2), menu_channel);
+        llDialog(CONTROLLER, menu, cmn_order_buttons(menu_items0 + menu_items1 + menu_items2), menu_channel);
     }
     return 0;
 }

@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 string product = "AVsitter™ seat select";
 string version = "2.2";
 integer select_type;
@@ -38,14 +39,6 @@ Out(integer level, string out)
         llOwnerSay(llGetScriptName() + "[" + version + "] " + out);
     }
 }
-string strReplace(string str, string search, string replace)
-{
-    return llDumpList2String(llParseStringKeepNulls((str = "") + str, [search], []), replace);
-}
-list order_buttons(list buttons)
-{
-    return llList2List(buttons, -3, -1) + llList2List(buttons, -6, -4) + llList2List(buttons, -9, -7) + llList2List(buttons, -12, -10);
-}
 menu(key av)
 {
     integer sitter_index = llListFindList(SITTERS, [av]);
@@ -58,7 +51,7 @@ menu(key av)
             string avname = llKey2Name(llList2Key(SITTERS, i));
             if ((!select_type) && llList2Integer(SYNCS, i) == FALSE || select_type == 2 && avname != "" && av != llList2Key(SITTERS, i))
             {
-                menu_buttons += "⊘" + llGetSubString(strReplace(avname, " Resident", " "), 0, 11);
+                menu_buttons += "⊘" + llGetSubString(cmn_strReplace(avname, " Resident", " "), 0, 11);
             }
             else
             {
@@ -71,17 +64,8 @@ menu(key av)
         }
         menu_buttons += "[ADJUST]";
         llListenControl(menu_handle, TRUE);
-        llDialog(av, product + " " + version + "\n\n" + CUSTOM_TEXT + "[" + llList2String(BUTTONS, sitter_index) + "]", order_buttons(menu_buttons), menu_channel);
+        llDialog(av, product + " " + version + "\n\n" + CUSTOM_TEXT + "[" + llList2String(BUTTONS, sitter_index) + "]", cmn_order_buttons(menu_buttons), menu_channel);
     }
-}
-integer get_number_of_scripts()
-{
-    integer i = 1;
-    while (llGetInventoryType(main_script + " " + (string)i) == INVENTORY_SCRIPT)
-    {
-        i++;
-    }
-    return i;
 }
 default
 {
@@ -91,7 +75,7 @@ default
         menu_handle = llListen(menu_channel, "", "", "");
         llListenControl(menu_handle, FALSE);
         integer i;
-        for (i = 0; i < get_number_of_scripts(); i++)
+        for (i = 0; i < cmn_get_number_of_scripts(main_script); i++)
         {
             SITTERS += NULL_KEY;
             SYNCS += FALSE;
@@ -125,7 +109,7 @@ default
     {
         if (change & CHANGED_INVENTORY)
         {
-            if (llGetInventoryKey(notecard_name) != notecard_key || get_number_of_scripts() != llGetListLength(SITTERS))
+            if (llGetInventoryKey(notecard_name) != notecard_key || cmn_get_number_of_scripts(main_script) != llGetListLength(SITTERS))
             {
                 llResetScript();
             }

@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 //  For use attaching particle chains to LockGuard V2 compatible cuffs such as Open Collar
 //  This script should be placed inside the prim that contains your poses and props.
 //  Inspiration and function (not code) from the Bright CISS system by Shan Bright & Innula Zenovka.

@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
  /*
  * The release version of the [AV]object Script has the original AVsitter experience
  * enabled. Scripts with this experience may not be shared in full perms form.
@@ -31,15 +32,6 @@ integer prop_point;
 integer experience_denied_reason;
 key originalowner;
 key give_prop_warning_request;
-unsit_all()
-{
-    integer i = llGetNumberOfPrims();
-    while (llGetAgentSize(llGetLinkKey(i)))
-    {
-        llUnSit(llGetLinkKey(i));
-        i--;
-    }
-}
 integer verbose = 5;
 Out(integer level, string out)
 {
@@ -218,7 +210,7 @@ state prop
                 {
                     if (llGetAgentSize(llGetLinkKey(llGetNumberOfPrims())))
                     {
-                        unsit_all();
+                        cmn_unsit_all();
                         llSleep(1);
                     }
                     llSay(comm_channel, "DEREZ|" + (string)prop_id);

@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 string product = "AVsitter2 MLP converter";
 string version = "2.2";
 string notecard_basename = "AVpos";
@@ -31,27 +32,6 @@ Out(integer level, string out)
     {
         llOwnerSay(llGetScriptName() + "[" + version + "] " + out);
     }
-}
-string FormatFloat(float f, integer num_decimals)
-{
-    float rounding = (float)(".5e-" + (string)num_decimals) - 5e-07;
-    if (f < 0.)
-        f -= rounding;
-    else
-        f += rounding;
-    string ret = llGetSubString((string)f, 0, num_decimals - (!num_decimals) - 7);
-    if (llSubStringIndex(ret, ".") != -1)
-    {
-        while (llGetSubString(ret, -1, -1) == "0")
-        {
-            ret = llGetSubString(ret, 0, -2);
-        }
-    }
-    if (llGetSubString(ret, -1, -1) == ".")
-    {
-        ret = llGetSubString(ret, 0, -2);
-    }
-    return ret;
 }
 finish()
 {
@@ -180,8 +160,8 @@ default
                                 vector pos = (vector)("<" + llList2String(parts, animator_count * 2 + 1));
                                 vector rot = (vector)("<" + llList2String(parts, animator_count * 2 + 2));
                                 pos += (vector)llGetObjectDesc();
-                                string result = "<" + FormatFloat(pos.x, 3) + "," + FormatFloat(pos.y, 3) + "," + FormatFloat(pos.z, 3) + ">";
-                                result += "<" + FormatFloat(rot.x, 1) + "," + FormatFloat(rot.y, 1) + "," + FormatFloat(rot.z, 1) + ">";
+                                string result = "<" + cmn_FormatFloat(pos.x, 3) + "," + cmn_FormatFloat(pos.y, 3) + "," + cmn_FormatFloat(pos.z, 3) + ">";
+                                result += "<" + cmn_FormatFloat(rot.x, 1) + "," + cmn_FormatFloat(rot.y, 1) + "," + cmn_FormatFloat(rot.z, 1) + ">";
                                 Readout_Say("{" + command + "}" + result);
                             }
                         }

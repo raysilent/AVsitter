@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 string product = "AVsitter™ Xcite!";
 string version = "1.02";
 string notecard_name = "[AV]Xcite_settings";
@@ -45,13 +46,9 @@ string parse_text(string say)
         {
             sitter_name = "(nobody)";
         }
-        say = strReplace(say, "/" + (string)i, sitter_name);
+        say = cmn_strReplace(say, "/" + (string)i, sitter_name);
     }
     return say;
-}
-string strReplace(string str, string search, string replace)
-{
-    return llDumpList2String(llParseStringKeepNulls(str, [search], []), replace);
 }
 default
 {

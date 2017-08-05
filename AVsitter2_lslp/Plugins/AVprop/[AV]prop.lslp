@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 string version = "2.2";
 string notecard_name = "AVpos";
 string main_script = "[AV]sitA";
@@ -46,15 +47,6 @@ Out(integer level, string out)
 integer IsInteger(string data)
 {
     return llParseString2List((string)llParseString2List(data, ["8", "9"], []), ["0", "1", "2", "3", "4", "5", "6", "7"], []) == [] && data != "";
-}
-integer get_number_of_scripts()
-{
-    integer i = 1;
-    while (llGetInventoryType(main_script + " " + (string)i) == INVENTORY_SCRIPT)
-    {
-        i++;
-    }
-    return i;
 }
 integer get_point(string text)
 {
@@ -246,7 +238,7 @@ init_sitters()
     SITTERS = [];
     SITTER_POSES = [];
     integer i;
-    for (i = 0; i < get_number_of_scripts(); i++)
+    for (i = 0; i < cmn_get_number_of_scripts(main_script); i++)
     {
         SITTERS += NULL_KEY;
         SITTER_POSES += "";
@@ -450,7 +442,7 @@ default
                 remove_all_props();
                 llResetScript();
             }
-            else if (get_number_of_scripts() != llGetListLength(SITTERS))
+            else if (cmn_get_number_of_scripts(main_script) != llGetListLength(SITTERS))
             {
                 init_sitters();
             }

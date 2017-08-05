@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 string product = "AVsitter™ RLV";
 string version = "2.2";
 integer ignorenextswap;
@@ -78,14 +79,6 @@ Out(integer level, string out)
     {
         llOwnerSay(llGetScriptName() + "[" + version + "]:" + out);
     }
-}
-string strReplace(string str, string search, string replace)
-{
-    return llDumpList2String(llParseStringKeepNulls(str, [search], []), replace);
-}
-list order_buttons(list buttons)
-{
-    return llList2List(buttons, -3, -1) + llList2List(buttons, -6, -4) + llList2List(buttons, -9, -7) + llList2List(buttons, -12, -10);
 }
 relay(key av, string msg)
 {
@@ -260,7 +253,7 @@ capture_attempt(key id, string target_sitter)
 }
 dialog(string text, list buttons)
 {
-    llDialog(CONTROLLER, product + " " + version + "\n\n" + text, order_buttons(buttons), menu_channel);
+    llDialog(CONTROLLER, product + " " + version + "\n\n" + text, cmn_order_buttons(buttons), menu_channel);
 }
 reset()
 {
@@ -273,15 +266,6 @@ reset()
     TimelockSecUntilRelease = defaultTimelock;
     hovertext();
 }
-unsit_all()
-{
-    integer i = llGetNumberOfPrims();
-    while (llGetAgentSize(llGetLinkKey(i)))
-    {
-        llUnSit(llGetLinkKey(i));
-        i--;
-    }
-}
 release_all()
 {
     while (llGetListLength(CAPTIVES))
@@ -292,7 +276,7 @@ release_all()
 stop()
 {
     release_all();
-    unsit_all();
+    cmn_unsit_all();
     reset();
 }
 release(key SLAVE, integer allowUnsit)
@@ -380,7 +364,7 @@ select_submissive_rlv()
         {
             if (llList2Key(DESIGNATIONS_NOW, i))
             {
-                menu_items += llGetSubString(strReplace(llKey2Name(llList2Key(DESIGNATIONS_NOW, i)), " Resident", ""), 0, 11);
+                menu_items += llGetSubString(cmn_strReplace(llKey2Name(llList2Key(DESIGNATIONS_NOW, i)), " Resident", ""), 0, 11);
                 SITTERS_MENUKEYS += llList2Key(DESIGNATIONS_NOW, i);
             }
         }
@@ -887,7 +871,7 @@ state running
             if (!~llListFindList(DETECTED_AVATAR_KEYS, [relay_owner]))
             {
                 DETECTED_AVATAR_KEYS += relay_owner;
-                DETECTED_AVATAR_SHORTNAMES += llGetSubString(strReplace(llKey2Name(relay_owner), " Resident", ""), 0, 11);
+                DETECTED_AVATAR_SHORTNAMES += llGetSubString(cmn_strReplace(llKey2Name(relay_owner), " Resident", ""), 0, 11);
                 if (llGetListLength(DETECTED_AVATAR_KEYS) == expected_number)
                 {
                     llSetTimerEvent(0.01);

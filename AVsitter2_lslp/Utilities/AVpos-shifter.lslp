@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 float version = 1.2;
 string notecard_name = "AVpos";
 string url = "https://avsitter.com/settings.php"; // the settings dump service remains up for AVsitter customers. settings clear periodically.
@@ -38,27 +39,6 @@ integer IsVector(string s)
     if (llGetListLength(split) != 7)
         return FALSE;
     return !((string)((vector)s) == (string)((vector)((string)llListInsertList(split, ["-"], 5))));
-}
-string FormatFloat(float f, integer num_decimals)
-{
-    float rounding = (float)(".5e-" + (string)num_decimals) - 5e-07;
-    if (f < 0.)
-        f -= rounding;
-    else
-        f += rounding;
-    string ret = llGetSubString((string)f, 0, num_decimals - (!num_decimals) - 7);
-    if (llSubStringIndex(ret, ".") != -1)
-    {
-        while (llGetSubString(ret, -1, -1) == "0")
-        {
-            ret = llGetSubString(ret, 0, -2);
-        }
-    }
-    if (llGetSubString(ret, -1, -1) == ".")
-    {
-        ret = llGetSubString(ret, 0, -2);
-    }
-    return ret;
 }
 instructions()
 {
@@ -180,8 +160,8 @@ default
                     pos = -target_prim_pos / target_prim_rot + pos / target_prim_rot;
                     rotation rot = llEuler2Rot((vector)("<" + llList2String(parts, 2)) * DEG_TO_RAD);
                     vector vec_rot = llRot2Euler(rot / target_prim_rot) * RAD_TO_DEG;
-                    string result = "<" + FormatFloat(pos.x, 3) + "," + FormatFloat(pos.y, 3) + "," + FormatFloat(pos.z, 3) + ">";
-                    result += "<" + FormatFloat(vec_rot.x, 1) + "," + FormatFloat(vec_rot.y, 1) + "," + FormatFloat(vec_rot.z, 1) + ">";
+                    string result = "<" + cmn_FormatFloat(pos.x, 3) + "," + cmn_FormatFloat(pos.y, 3) + "," + cmn_FormatFloat(pos.z, 3) + ">";
+                    result += "<" + cmn_FormatFloat(vec_rot.x, 1) + "," + cmn_FormatFloat(vec_rot.y, 1) + "," + cmn_FormatFloat(vec_rot.z, 1) + ">";
                     Readout_Say("{" + command + "}" + result);
                 }
                 else if (llSubStringIndex(llGetSubString(data, 0, 0), "PROP"))
@@ -204,8 +184,8 @@ default
                         rot = llEuler2Rot((vector)llList2String(parts, index + 1) * DEG_TO_RAD);
                         pos = -target_prim_pos / target_prim_rot + pos / target_prim_rot;
                         vector vec_rot = llRot2Euler(rot / target_prim_rot) * RAD_TO_DEG;
-                        string pos_string = "<" + FormatFloat(pos.x, 3) + "," + FormatFloat(pos.y, 3) + "," + FormatFloat(pos.z, 3) + ">";
-                        string rot_string = "<" + FormatFloat(vec_rot.x, 1) + "," + FormatFloat(vec_rot.y, 1) + "," + FormatFloat(vec_rot.z, 1) + ">";
+                        string pos_string = "<" + cmn_FormatFloat(pos.x, 3) + "," + cmn_FormatFloat(pos.y, 3) + "," + cmn_FormatFloat(pos.z, 3) + ">";
+                        string rot_string = "<" + cmn_FormatFloat(vec_rot.x, 1) + "," + cmn_FormatFloat(vec_rot.y, 1) + "," + cmn_FormatFloat(vec_rot.z, 1) + ">";
                         parts = llListReplaceList(parts, [pos_string, rot_string], index, index + 1);
                     }
                     Readout_Say(llDumpList2String(parts, "|"));

@@ -11,6 +11,7 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
 
 // Placed in prop objects, this script sends the uuid of any Lockguard rings to the script in furniture.
 // Ring prims in the prop should be named with "ring" in their prim name. e.g. "ring1", "ring2"

@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 integer is_running = TRUE;
 list facial_anim_list = ["express_afraid_emote", "express_anger_emote", "express_laugh_emote", "express_bored_emote", "express_cry_emote", "express_embarrassed_emote", "express_sad_emote", "express_toothsmile", "express_smile", "express_surprise_emote", "express_worry_emote", "express_repulsed_emote", "express_shrug_emote", "express_wink_emote", "express_disdain", "express_frown", "express_kiss", "express_open_mouth", "express_tongue_out"];
 integer IsInteger(string data)
@@ -34,15 +35,6 @@ list running_sequence_indexes;
 list running_pointers;
 list SITTERS;
 list SITTER_POSES;
-integer get_number_of_scripts()
-{
-    integer i = 1;
-    while (llGetInventoryType(main_script + " " + (string)i) == INVENTORY_SCRIPT)
-    {
-        i++;
-    }
-    return i;
-}
 integer verbose = 0;
 Out(integer level, string out)
 {
@@ -65,7 +57,7 @@ init_sitters()
     SITTERS = [];
     SITTER_POSES = [];
     integer i;
-    for (i = 0; i < get_number_of_scripts(); i++)
+    for (i = 0; i < cmn_get_number_of_scripts(main_script); i++)
     {
         SITTERS += NULL_KEY;
         SITTER_POSES += "";
@@ -330,7 +322,7 @@ default
             {
                 llResetScript();
             }
-            else if (get_number_of_scripts() != llGetListLength(SITTERS))
+            else if (cmn_get_number_of_scripts(main_script) != llGetListLength(SITTERS))
             {
                 init_sitters();
             }

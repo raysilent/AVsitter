@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 string product = "AVsitter™ sequence";
 string version = "2.2";
 string main_script = "[AV]sitA";
@@ -43,10 +44,6 @@ Out(integer level, string out)
     {
         llOwnerSay(llGetScriptName() + "[" + version + "] " + out);
     }
-}
-string strReplace(string str, string search, string replace)
-{
-    return llDumpList2String(llParseStringKeepNulls(str, [search], []), replace);
 }
 DEBUGSay(integer level, string out)
 {
@@ -152,13 +149,6 @@ run_sequence()
         }
     }
 }
-integer get_number_of_scripts()
-{
-    integer i;
-    while (llGetInventoryType(main_script + " " + (string)(++i)) == INVENTORY_SCRIPT)
-        ;
-    return i;
-}
 string parse_text(string say)
 {
     integer i;
@@ -169,7 +159,7 @@ string parse_text(string say)
         {
             sitter_name = "nobody";
         }
-        say = strReplace(say, "/" + (string)i, sitter_name);
+        say = cmn_strReplace(say, "/" + (string)i, sitter_name);
     }
     return say;
 }
@@ -207,11 +197,7 @@ sequence_control()
     }
     list menu_items = ["◀◀", pauseplay, "▶▶"];
     menu_handle = llListen(menu_channel, "", CONTROLLER, "");
-    llDialog(CONTROLLER, product + " " + version + "\n\n[" + CURRENT_SEQUENCE_NAME + "]\n◀◀ = previous anim in sequence.\n▮▮ = pause sequence.\n▶▶ = skip to next anim in sequence.", order_buttons(["[BACK]"] + menu_items), menu_channel);
-}
-list order_buttons(list buttons)
-{
-    return llList2List(buttons, -3, -1) + llList2List(buttons, -6, -4) + llList2List(buttons, -9, -7) + llList2List(buttons, -12, -10);
+    llDialog(CONTROLLER, product + " " + version + "\n\n[" + CURRENT_SEQUENCE_NAME + "]\n◀◀ = previous anim in sequence.\n▮▮ = pause sequence.\n▶▶ = skip to next anim in sequence.", cmn_order_buttons(["[BACK]"] + menu_items), menu_channel);
 }
 commit_sequence_data()
 {
@@ -285,7 +271,7 @@ state running
     {
         Out(0, (string)llGetListLength(SEQUENCE_DATA_NAMES) + " Sequences Ready, Mem=" + (string)(65536 - llGetUsedMemory()));
         integer i;
-        for (i = 0; i < get_number_of_scripts(); i++)
+        for (i = 0; i < cmn_get_number_of_scripts(main_script); i++)
         {
             SITTERS += NULL_KEY;
         }
@@ -418,7 +404,7 @@ state running
         }
         if (change & CHANGED_INVENTORY)
         {
-            if (llGetInventoryKey(notecard_name) != notecard_key || get_number_of_scripts() != llGetListLength(SITTERS))
+            if (llGetInventoryKey(notecard_name) != notecard_key || cmn_get_number_of_scripts(main_script) != llGetListLength(SITTERS))
             {
                 llResetScript();
             }

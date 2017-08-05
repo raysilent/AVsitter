@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 integer OLD_HELPER_METHOD;
 key key_request;
 string url = "https://avsitter.com/settings.php"; // the settings dump service remains up for AVsitter customers. settings clear periodically.
@@ -20,7 +21,7 @@ string helper_name = "[AV]helper";
 string prop_script = "[AV]prop";
 string expression_script = "[AV]faces";
 string camera_script = "[AV]camera";
-string mainscript = "[AV]sitA";
+string main_script = "[AV]sitA";
 string notecard_name = "AVpos";
 list POS_LIST;
 list ROT_LIST;
@@ -46,27 +47,6 @@ list chosen_animations;
 string cache;
 string webkey;
 integer webcount;
-string FormatFloat(float f, integer num_decimals)
-{
-    float rounding = (float)(".5e-" + (string)num_decimals) - 5e-07;
-    if (f < 0.)
-        f -= rounding;
-    else
-        f += rounding;
-    string ret = llGetSubString((string)f, 0, num_decimals - (!num_decimals) - 7);
-    if (~llSubStringIndex(ret, "."))
-    {
-        while (llGetSubString(ret, -1, -1) == "0")
-        {
-            ret = llGetSubString(ret, 0, -2);
-        }
-    }
-    if (llGetSubString(ret, -1, -1) == ".")
-    {
-        ret = llGetSubString(ret, 0, -2);
-    }
-    return ret;
-}
 web(integer force)
 {
     if (llStringLength(llEscapeURL(cache)) > 1024 || force)
@@ -99,14 +79,6 @@ stop_all_anims(key id)
     {
         llMessageLinked(LINK_THIS, 90002, llList2String(animations, i), id);
     }
-}
-list order_buttons(list buttons)
-{
-    return llList2List(buttons, -3, -1) + llList2List(buttons, -6, -4) + llList2List(buttons, -9, -7) + llList2List(buttons, -12, -10);
-}
-string strReplace(string str, string search, string replace)
-{
-    return llDumpList2String(llParseStringKeepNulls((str = "") + str, [search], []), replace);
 }
 preview_anim(string anim, key id)
 {
@@ -194,7 +166,7 @@ choice_menu(list options, string menu_text)
         }
         menu_items += ["[BACK]", "[<<]", "[>>]"];
     }
-    llDialog(controller, menu_text, order_buttons(menu_items), comm_channel);
+    llDialog(controller, menu_text, cmn_order_buttons(menu_items), comm_channel);
 }
 new_menu()
 {
@@ -206,7 +178,7 @@ new_menu()
     }
     menu_items += "[CAMERA]";
     string menu_text = "\nWhat would you like to create?\n";
-    llDialog(controller, menu_text, order_buttons(menu_items), comm_channel);
+    llDialog(controller, menu_text, cmn_order_buttons(menu_items), comm_channel);
 }
 end_helper_mode()
 {
@@ -216,13 +188,6 @@ end_helper_mode()
 Out(string out)
 {
     llOwnerSay(llGetScriptName() + "[" + version + "] " + out);
-}
-integer get_number_of_scripts()
-{
-    integer i;
-    while (llGetInventoryType(mainscript + " " + (string)(++i)) == INVENTORY_SCRIPT)
-        ;
-    return i;
 }
 string convert_to_world_positions(integer num)
 {
@@ -267,7 +232,7 @@ camera_menu()
     }
     llDialog(controller, text, ["[BACK]", "[SAVE]", "[CLEAR]"], comm_channel);
 }
-unsit_all()
+unsit_all() // +stop_all_anims
 {
     integer i = llGetNumberOfPrims();
     while (llGetAgentSize(llGetLinkKey(i)))
@@ -319,7 +284,7 @@ default
         llListen(chat_channel, "", llGetOwner(), "");
         comm_channel = ((integer)llFrand(99999) + 1) * 1000 * -1;
         integer i;
-        while (i++ < get_number_of_scripts())
+        while (i++ < cmn_get_number_of_scripts(main_script))
         {
             SITTERS += 0;
             POS_LIST += 0;
@@ -382,7 +347,7 @@ default
                         return;
                     }
                 }
-                if (llGetInventoryType(mainscript + " " + (string)(script_channel + 1)) == INVENTORY_SCRIPT)
+                if (llGetInventoryType(main_script + " " + (string)(script_channel + 1)) == INVENTORY_SCRIPT)
                 {
                     llMessageLinked(LINK_THIS, 90020, (string)(script_channel + 1), "");
                 }
@@ -399,7 +364,7 @@ default
             {
                 if (llGetSubString(msg, 0, 3) == "S:M:" || llGetSubString(msg, 0, 3) == "S:T:")
                 {
-                    msg = strReplace(msg, "*|", "|");
+                    msg = cmn_strReplace(msg, "*|", "|");
                 }
                 if (llGetSubString(msg, 0, 1) == "V:")
                 {
@@ -410,7 +375,7 @@ default
                         Readout_Say("");
                         Readout_Say("--✄--COPY BELOW INTO \"AVpos\" NOTECARD--✄--");
                         Readout_Say("");
-                        Readout_Say("\"" + llToUpper(llGetObjectName()) + "\" " + strReplace(llList2String(data, 0), "V:", "AVsitter "));
+                        Readout_Say("\"" + llToUpper(llGetObjectName()) + "\" " + cmn_strReplace(llList2String(data, 0), "V:", "AVsitter "));
                         if ((integer)llList2String(data, 1))
                         {
                             Readout_Say("MTYPE " + llList2String(data, 1));
@@ -429,11 +394,11 @@ default
                         }
                         if (llList2String(data, 6))
                         {
-                            Readout_Say("TEXT " + strReplace(llList2String(data, 6), "\n", "\\n"));
+                            Readout_Say("TEXT " + cmn_strReplace(llList2String(data, 6), "\n", "\\n"));
                         }
                         if (llList2String(data, 7))
                         {
-                            Readout_Say("ADJUST " + strReplace(llList2String(data, 7), "�", "|"));
+                            Readout_Say("ADJUST " + cmn_strReplace(llList2String(data, 7), "�", "|"));
                         }
                         if ((integer)llList2String(data, 8))
                         {
@@ -454,7 +419,7 @@ default
                         string SITTER_TEXT;
                         if (llList2String(data, 5))
                         {
-                            SITTER_TEXT = "|" + strReplace(llList2String(data, 5), "�", "|");
+                            SITTER_TEXT = "|" + cmn_strReplace(llList2String(data, 5), "�", "|");
                         }
                         Readout_Say("SITTER " + (string)id + SITTER_TEXT);
                         Readout_Say("");
@@ -463,36 +428,36 @@ default
                 }
                 else if (llGetSubString(msg, 0, 0) == "{")
                 {
-                    msg = strReplace(msg, "{P:", "{");
+                    msg = cmn_strReplace(msg, "{P:", "{");
                     list parts = llParseStringKeepNulls(llDumpList2String(llParseString2List(llGetSubString(msg, llSubStringIndex(msg, "}") + 1, -1), [" "], [""]), ""), ["<"], []);
                     string pos = "<" + llList2String(parts, 1);
                     string rot = "<" + llList2String(parts, 2);
                     vector pos2 = (vector)pos;
                     vector rot2 = (vector)rot;
-                    string result = "<" + FormatFloat(pos2.x, 3) + "," + FormatFloat(pos2.y, 3) + "," + FormatFloat(pos2.z, 3) + ">";
-                    result += "<" + FormatFloat(rot2.x, 1) + "," + FormatFloat(rot2.y, 1) + "," + FormatFloat(rot2.z, 1) + ">";
+                    string result = "<" + cmn_FormatFloat(pos2.x, 3) + "," + cmn_FormatFloat(pos2.y, 3) + "," + cmn_FormatFloat(pos2.z, 3) + ">";
+                    result += "<" + cmn_FormatFloat(rot2.x, 1) + "," + cmn_FormatFloat(rot2.y, 1) + "," + cmn_FormatFloat(rot2.z, 1) + ">";
                     msg = llGetSubString(msg, 0, llSubStringIndex(msg, "}")) + result;
                 }
                 else if (llGetSubString(msg, 1, 1) == ":")
                 {
-                    msg = strReplace(msg, "S:P:", "POSE ");
-                    msg = strReplace(msg, "S:M:", "MENU ");
-                    msg = strReplace(msg, "S:T:", "TOMENU ");
+                    msg = cmn_strReplace(msg, "S:P:", "POSE ");
+                    msg = cmn_strReplace(msg, "S:M:", "MENU ");
+                    msg = cmn_strReplace(msg, "S:T:", "TOMENU ");
                     if (llGetSubString(msg, -6, -1) == "|90210")
                     {
-                        msg = strReplace(msg, "S:B:", "SEQUENCE ");
-                        msg = strReplace(msg, "|90210", "");
+                        msg = cmn_strReplace(msg, "S:B:", "SEQUENCE ");
+                        msg = cmn_strReplace(msg, "|90210", "");
                     }
                     else
                     {
-                        msg = strReplace(msg, "S:B:", "BUTTON ");
+                        msg = cmn_strReplace(msg, "S:B:", "BUTTON ");
                         if (!~llSubStringIndex(msg, "�"))
                         {
-                            msg = strReplace(msg, "|90200", "");
+                            msg = cmn_strReplace(msg, "|90200", "");
                         }
                     }
-                    msg = strReplace(msg, "S:", "SYNC ");
-                    msg = strReplace(msg, "�", "|");
+                    msg = cmn_strReplace(msg, "S:", "SYNC ");
+                    msg = cmn_strReplace(msg, "�", "|");
                 }
                 if (llGetSubString(msg, -1, -1) == "*")
                 {
@@ -774,8 +739,8 @@ default
             }
             else
             {
-                msg = strReplace(msg, "\n", "");
-                msg = strReplace(msg, "|", "");
+                msg = cmn_strReplace(msg, "\n", "");
+                msg = cmn_strReplace(msg, "|", "");
                 msg = llGetSubString(msg, 0, 22);
                 if (msg == "")
                 {

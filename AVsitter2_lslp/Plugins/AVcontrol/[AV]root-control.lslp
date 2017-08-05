@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 string product = "AVsitter™ Menu Control";
 string version = "2.2";
 string security_script = "[AV]root-security";
@@ -32,14 +33,6 @@ Out(integer level, string out)
     {
         llOwnerSay(llGetScriptName() + "[" + version + "]:" + out);
     }
-}
-list order_buttons(list buttons)
-{
-    return llList2List(buttons, -3, -1) + llList2List(buttons, -6, -4) + llList2List(buttons, -9, -7) + llList2List(buttons, -12, -10);
-}
-string strReplace(string str, string search, string replace)
-{
-    return llDumpList2String(llParseStringKeepNulls(str, [search], []), replace);
 }
 controller_menu(key id)
 {
@@ -78,7 +71,7 @@ controller_menu(key id)
             {
                 if (llList2Key(SITTERS, i) != NULL_KEY)
                 {
-                    menu_items += llGetSubString(strReplace(llKey2Name(llList2Key(SITTERS, i)), " Resident", ""), 0, 11);
+                    menu_items += llGetSubString(cmn_strReplace(llKey2Name(llList2Key(SITTERS, i)), " Resident", ""), 0, 11);
                     SITTERS_MENUKEYS += llList2Key(SITTERS, i);
                 }
             }
@@ -99,7 +92,7 @@ controller_menu(key id)
             }
             if (llGetListLength(menu_items))
             {
-                dialog(text, order_buttons(menu_items), id);
+                dialog(text, cmn_order_buttons(menu_items), id);
             }
         }
     }
@@ -108,7 +101,7 @@ dialog(string text, list menu_items, key id)
 {
     llListenRemove(menu_handle);
     menu_handle = llListen(menu_channel = ((integer)llFrand(2147483646) + 1) * -1, "", id, "");
-    llDialog(id, product + " " + version + "\n\n" + text + "\n", order_buttons(menu_items), menu_channel);
+    llDialog(id, product + " " + version + "\n\n" + text + "\n", cmn_order_buttons(menu_items), menu_channel);
     llSetTimerEvent(120);
 }
 integer check_for_RLV()

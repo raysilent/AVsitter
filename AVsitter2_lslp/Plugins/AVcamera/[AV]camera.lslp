@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 string version = "2.2";
 string notecard_name = "AVpos";
 string main_script = "[AV]sitA";
@@ -26,15 +27,6 @@ list camera_triggers;
 list camera_settings;
 integer lastByButton = -1;
 string lastPose;
-integer get_number_of_scripts()
-{
-    integer i = 1;
-    while (llGetInventoryType(main_script + " " + (string)i) == INVENTORY_SCRIPT)
-    {
-        i++;
-    }
-    return i;
-}
 integer verbose = 0;
 Out(integer level, string out)
 {

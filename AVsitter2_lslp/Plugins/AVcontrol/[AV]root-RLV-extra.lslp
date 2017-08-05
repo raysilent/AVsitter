@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 string product;
 string version = "2.2";
 integer RELAY_CHANNEL = -1812221819;
@@ -46,14 +47,6 @@ Out(integer level, string out)
     {
         llOwnerSay(llGetScriptName() + "[" + version + "]:" + out);
     }
-}
-string strReplace(string str, string search, string replace)
-{
-    return llDumpList2String(llParseStringKeepNulls(str, [search], []), replace);
-}
-list order_buttons(list buttons)
-{
-    return llList2List(buttons, -3, -1) + llList2List(buttons, -6, -4) + llList2List(buttons, -9, -7) + llList2List(buttons, -12, -10);
 }
 relay(key av, string msg)
 {
@@ -120,7 +113,7 @@ dialog(string text, list buttons)
 {
     while (llGetListLength(buttons) % 3)
         buttons += " ";
-    llDialog(CONTROLLER, "AVsitter™ RLV " + product + " " + version + "\n\n" + text, order_buttons(buttons), menu_channel);
+    llDialog(CONTROLLER, "AVsitter™ RLV " + product + " " + version + "\n\n" + text, cmn_order_buttons(buttons), menu_channel);
 }
 remove_script(string reason)
 {
@@ -308,7 +301,7 @@ state running
                 {
                     list subRestrictions = llParseString2List(llList2String(RLV_RESTRICTIONS, index * 3 + 1), [","], []);
                     string param = "n";
-                    string chatText = strReplace(llKey2Name(SLAVE), " Resident", "") + " is ";
+                    string chatText = cmn_strReplace(llKey2Name(SLAVE), " Resident", "") + " is ";
                     if (~llSubStringIndex(msg, iconActive))
                     {
                         param = "y";

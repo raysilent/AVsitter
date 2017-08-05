@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 string product = "AVmenu™";
 string version = "2.2";
 integer verbose = 0;
@@ -64,10 +65,6 @@ check_avsit()
         remove_script("This script can not be used with the sit script in the same prim. Removing script!");
     }
 }
-list order_buttons(list buttons)
-{
-    return llList2List(buttons, -3, -1) + llList2List(buttons, -6, -4) + llList2List(buttons, -9, -7) + llList2List(buttons, -12, -10);
-}
 Out(integer level, string out)
 {
     if (verbose >= level)
@@ -85,7 +82,7 @@ Readout_Say(string say)
 }
 dialog(key av, string menu_text, list menu_items)
 {
-    llDialog(av, product + " " + version + "\n\n" + menu_text, order_buttons(menu_items), menu_channel);
+    llDialog(av, product + " " + version + "\n\n" + menu_text, cmn_order_buttons(menu_items), menu_channel);
     last_menu_unixtime = llGetUnixTime();
     llSetTimerEvent(120);
 }
@@ -277,10 +274,6 @@ integer prop_menu(integer return_pages, key av)
     dialog(av, custom_text, menu_items1 + menu_items2);
     return 0;
 }
-string strReplace(string str, string search, string replace)
-{
-    return llDumpList2String(llParseStringKeepNulls((str = "") + str, [search], []), replace);
-}
 naming()
 {
     llTextBox(llGetOwner(), "\nPlease type a button name for your prop\nProp: " + choice, menu_channel);
@@ -430,7 +423,7 @@ default
             Readout_Say("");
             if (custom_text)
             {
-                Readout_Say("TEXT " + strReplace(custom_text, "\n", "\\n"));
+                Readout_Say("TEXT " + cmn_strReplace(custom_text, "\n", "\\n"));
             }
             integer i;
             for (i = 0; i < llGetListLength(MENU_LIST); i++)
@@ -448,7 +441,7 @@ default
                     }
                     else if (llList2String(change_me, 0) == "B")
                     {
-                        list l = [llList2String(change_me, 1), strReplace(strReplace(llList2String(DATA_LIST, i), "90200", ""), "�", "|")];
+                        list l = [llList2String(change_me, 1), cmn_strReplace(cmn_strReplace(llList2String(DATA_LIST, i), "90200", ""), "�", "|")];
                         if (llList2String(l, 1) == "")
                         {
                             l = llList2List(l, 0, 0);

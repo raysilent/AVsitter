@@ -11,7 +11,8 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
- 
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
+
 string product = "AVsitter™ Security 2.2";
 string script_basename = "[AV]sitA";
 string menucontrol_script = "[AV]root-control";
@@ -65,10 +66,6 @@ back_to_adjust(integer SCRIPT_CHANNEL, key sitter)
 {
     llMessageLinked(LINK_SET, 90101, (string)SCRIPT_CHANNEL + "|[ADJUST]", sitter);
 }
-list order_buttons(list menu_items)
-{
-    return llList2List(menu_items, -3, -1) + llList2List(menu_items, -6, -4) + llList2List(menu_items, -9, -7) + llList2List(menu_items, -12, -10);
-}
 register_touch(key id, integer animation_menu_function, integer active_prim, integer giveFailedMessage)
 {
     if (pass_security(id, "MENU"))
@@ -103,7 +100,7 @@ dialog(string text, list menu_items)
 {
     llListenRemove(menu_handle);
     menu_handle = llListen(menu_channel = ((integer)llFrand(2147483646) + 1) * -1, "", llGetOwner(), "");
-    llDialog(llGetOwner(), product + "\n\n" + text, order_buttons(menu_items), menu_channel);
+    llDialog(llGetOwner(), product + "\n\n" + text, cmn_order_buttons(menu_items), menu_channel);
     llSetTimerEvent(600);
 }
 integer check_for_RLV()

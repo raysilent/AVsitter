@@ -11,6 +11,7 @@
  * receive automatic updates and other benefits! All details and user 
  * instructions can be found at http://avsitter.github.io
  */
+$import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
 
 /*
  * Simple script used for updating a large number of furniture items at once
