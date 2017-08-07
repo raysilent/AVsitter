@@ -13,15 +13,6 @@
  */
 $import AVsitter2_lslp.AVsitterCommon.lslm cmn_;
 
- /*
- * The release version of the [AV]object Script has the original AVsitter experience
- * enabled. Scripts with this experience may not be shared in full perms form.
- * Please support further development of AVsitter by not sharing it!
- * If you acquired this script from someone else, please support the
- * developers by purchasing AVsitter (see https://avsitter.github.io)
- * and also obtain the benefit of automatic updates.
- */
-
 string version = "2.020";
 integer comm_channel;
 integer local_attach_channel = -2907539;
@@ -32,7 +23,9 @@ integer prop_point;
 integer experience_denied_reason;
 key originalowner;
 key give_prop_warning_request;
+
 integer verbose = 5;
+
 Out(integer level, string out)
 {
     if (verbose >= level)
@@ -40,11 +33,13 @@ Out(integer level, string out)
         llOwnerSay(llGetScriptName() + "[" + version + "] " + out);
     }
 }
+
 default
 {
     state_entry()
     {
     }
+
     on_rez(integer start)
     {
         if (start)
@@ -53,6 +48,7 @@ default
         }
     }
 }
+
 state prop
 {
     state_entry()
@@ -85,6 +81,7 @@ state prop
             llSetClickAction(CLICK_ACTION_TOUCH);
         }
     }
+
     attach(key id)
     {
         if (comm_channel)
@@ -112,6 +109,7 @@ state prop
             }
         }
     }
+
     touch_start(integer touched)
     {
         if ((!llGetAttached()) && (prop_type == 2 || prop_type == 1))
@@ -119,6 +117,7 @@ state prop
             llRequestExperiencePermissions(llDetectedKey(0), "");
         }
     }
+
     run_time_permissions(integer permissions)
     {
         if (permissions & PERMISSION_ATTACH)
@@ -138,6 +137,7 @@ state prop
             llDie();
         }
     }
+
     experience_permissions(key target_id)
     {
         if (llGetAttached())
@@ -149,12 +149,14 @@ state prop
             llAttachToAvatarTemp(prop_point);
         }
     }
+
     experience_permissions_denied(key agent_id, integer reason)
     {
         originalowner = llGetOwner();
         experience_denied_reason = reason;
         llRequestPermissions(agent_id, PERMISSION_ATTACH);
     }
+
     on_rez(integer start)
     {
         if (!llGetAttached())
@@ -162,6 +164,7 @@ state prop
             state restart_prop;
         }
     }
+
     listen(integer channel, string name, key id, string message)
     {
         list data = llParseString2List(message, ["|"], []);
@@ -224,6 +227,7 @@ state prop
         }
     }
 }
+
 state restart_prop
 {
     state_entry()
